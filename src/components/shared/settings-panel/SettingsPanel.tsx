@@ -20,69 +20,73 @@ const options: IOptionsPanelProps[] = [
 ]
 
 const SettingsPanel = () => {
+    // Состояние для управления видимостью панели опций
+    const [optionsModuleIsOpen, setOptionsModuleIsOpen] = useState<boolean>(false);
 
-    const [optionsModuleIsOpen, setOptionsModuleIsOpen] = useState<boolean>(false)
-    const [windowWidht, setWindowWidth] = useState<number>(window.innerWidth)
+    // Состояние для хранения ширины окна
+    const [windowWidht, setWindowWidth] = useState<number>(window.innerWidth);
 
-    const { settingsData } = useSettings()
+    // Хуки для получения данных настроек и данных набора текста
+    const { settingsData } = useSettings();
     const { typingData } = useTyping();
-    const { changeTimer } = useActions()
+    const { changeTimer } = useActions();
 
+    // Эффект для отслеживания изменения ширины окна
     useEffect(() => {
-        window.addEventListener("resize", () =>
-            setWindowWidth((v) => (v * 0) + window.innerWidth)
-        )
+        const handleResize = () => setWindowWidth(window.innerWidth);
+
+        window.addEventListener("resize", handleResize);
+
         return () => {
-            window.removeEventListener("resize", () =>
-                setWindowWidth((v) => (v * 0) + window.innerWidth)
-            )
-        }
-    }, [])
-
-
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     return (
         <section
             className={styles.settings_panel}
             style={{
-                ...typingData.timerRunning &&
-                { display: "none" },
+                ...typingData.timerRunning && { display: "none" }, // Прячем панель, если таймер запущен
             }}
         >
-            <VariantPanel />
+            <VariantPanel />  {/* Компонент для отображения варианта панелей */}
             <div className={styles.line}></div>
+            {/* Отображаем панель опций, если ширина окна больше 600 пикселей */}
             {windowWidht > 600 &&
                 options.map((option) => (
-                    option.name == settingsData.active_option && (
-                        <OptionsPanel name={option.name} value={option.value} />
+                    option.name === settingsData.active_option && (
+                        <OptionsPanel key={option.name} name={option.name} value={option.value} />
                     )
                 ))
             }
+            {/* Кнопка для открытия/закрытия модуля настроек */}
             <button className={styles.btn} onClick={() => setOptionsModuleIsOpen(!optionsModuleIsOpen)}>
                 <img
                     src={
                         optionsModuleIsOpen ?
-                            "/icons/close.svg"
-                            :
-                            "/icons/change.svg"
+                            "/icons/close.svg" :  // Иконка закрытия, если модуль открыт
+                            "/icons/change.svg"  // Иконка открытия, если модуль закрыт
                     }
-                    alt=""
-                    className={styles.icon} />
+                    alt="Toggle Settings"
+                    className={styles.icon}
+                />
             </button>
+            {/* Модуль настроек */}
             <SettingsOptionModule isOpen={optionsModuleIsOpen}>
                 <div className={styles.extended_settings}>
                     {options.map((option, index) => (
-                        option.name == settingsData.active_option && (
+                        option.name === settingsData.active_option && (
                             <OptionsPanel key={index} name={option.name} value={option.value} />
                         )
                     ))}
-                    {settingsData.active_option == "timer" &&
+                    {/* Если активная опция - таймер, отображаем поле ввода для изменения времени */}
+                    {settingsData.active_option === "timer" &&
                         <input
                             type="number"
                             value={typingData.time}
                             placeholder="Enter seconds"
                             className={styles.field}
-                            onChange={(e) => changeTimer(e.target.value)}
+                            onChange={(e) => changeTimer(e.target.value)}  // Обновляем таймер
                         />
                     }
                 </div>

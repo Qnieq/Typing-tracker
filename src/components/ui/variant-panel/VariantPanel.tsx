@@ -24,8 +24,9 @@ const VariantPanel = () => {
 
     return (
         <div className={styles.variants}>
-            {variants.map((variant) => (
+            {variants.map((variant, index) => (
                 <button
+                    key={index}
                     style={settingsData.active_option == variant.name ?
                         { color: "#3b3b3b" } : {}
                     }

@@ -6,47 +6,55 @@ import { ITextSectionProps } from "./text-section.types";
 import { useTypingProvider } from "@/hooks/useTypingProvider";
 
 const TextSection: React.FC<ITextSectionProps> = ({ setTextareaFocused, textareaFocused }) => {
-
+    // Получаем действия и данные из хуков
     const { updateUserInput, setText, processWord, setStartTime } = useActions();
     const { typingData } = useTyping();
-    const { textLoading } = useTypingProvider()
+    const { textLoading } = useTypingProvider();
 
-    const [letterWidth, setLetterWidth] = useState<number>(0)
+    // Состояние для ширины буквы
+    const [letterWidth, setLetterWidth] = useState<number>(0);
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-    const letterRef = useRef<HTMLSpanElement>(null)
+    // Ссылки на элементы
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const letterRef = useRef<HTMLSpanElement>(null);
 
+    // Обработчик изменения ввода в текстовую область
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         let value = e.target.value;
-        const expectedWord = typingData.text.split(' ')[0];
-        const userWord = value.split(' ')[0];
-        const lastChar = value[value.length - 1];
+        const expectedWord = typingData.text.split(' ')[0];  // Ожидаемое слово
+        const userWord = value.split(' ')[0];  // Введенное слово
+        const lastChar = value[value.length - 1];  // Последний символ ввода
 
+        // Если введенное слово и ожидаемое слово совпадают и последним символом является пробел
         if (value.length === expectedWord.length + 1 && lastChar === ' ') {
-            processWord()
-            setText(typingData.text.replace(/^\s*\S+\s*/, ''));
-            value = '';
-        } else if (userWord == "") {
-            value = userWord;
+            processWord();  // Обрабатываем введенное слово
+            setText(typingData.text.replace(/^\s*\S+\s*/, ''));  // Удаляем обработанное слово из текста
+            value = '';  // Очищаем ввод
+        } else if (userWord === "") {
+            value = userWord;  // Обрабатываем случай пустого ввода
         } else if (value.length > expectedWord.length) {
-            value = value.slice(0, expectedWord.length);
+            value = value.slice(0, expectedWord.length);  // Ограничиваем длину ввода
         }
 
+        // Если таймер не запущен и текстовая область находится в фокусе, устанавливаем время начала
         if (!typingData.timerRunning && textareaFocused) {
-            setStartTime()
+            setStartTime();
         }
 
+        // Обновляем ввод пользователя
         updateUserInput(value);
     };
 
+    // Эффект для обработки фокуса и потери фокуса текстовой области
     useEffect(() => {
-        const handleFocus = () => (setTextareaFocused(true), console.log(textareaFocused));
-        const handleBlur = () => (setTextareaFocused(false), console.log(textareaFocused));
+        const handleFocus = () => setTextareaFocused(true);
+        const handleBlur = () => setTextareaFocused(false);
 
         const textarea = textareaRef.current;
 
+        // Если текстовая область должна быть в фокусе, устанавливаем фокус
         if (textareaFocused) {
-            textarea?.focus()
+            textarea?.focus();
         }
 
         if (textarea) {
@@ -54,27 +62,27 @@ const TextSection: React.FC<ITextSectionProps> = ({ setTextareaFocused, textarea
             textarea.addEventListener('blur', handleBlur);
         }
 
-
         return () => {
             if (textarea) {
                 textarea.removeEventListener('focus', handleFocus);
                 textarea.removeEventListener('blur', handleBlur);
             }
         };
-    }, [textareaRef, textareaFocused]);
+    }, [textareaFocused]);
 
+    // Эффект для вычисления ширины буквы
     useEffect(() => {
         if (letterRef.current) {
-            const { width } = letterRef.current.getBoundingClientRect()
-            setLetterWidth((v) => (v! * 0) + width)
+            const { width } = letterRef.current.getBoundingClientRect();
+            setLetterWidth(width);
         }
-    }, [letterRef.current])
+    }, [letterRef.current]);
 
     return (
         <section className={styles.text_section}>
             <div
                 className={styles.text_hint}
-                style={{ ...!textareaFocused && { filter: "blur(4px)" } }}
+                style={{ ...!textareaFocused && { filter: "blur(4px)" } }}  // Применяем размытие, если текстовая область не в фокусе
             >
                 {typingData.text.split('').map((char, index) => {
                     const userChar = typingData.userInput.split('')[index] || '';
@@ -84,9 +92,9 @@ const TextSection: React.FC<ITextSectionProps> = ({ setTextareaFocused, textarea
                         <span
                             ref={letterRef}
                             key={index}
-                            className={!textLoading ? styles.hint : `${styles['hint-skeleton']}`}
+                            className={!textLoading ? styles.hint : `${styles['hint-skeleton']}`}  // Применяем класс в зависимости от состояния загрузки текста
                             style={{
-                                color: isCorrect ? 'white' : userChar === '' ? 'rgba(255, 255, 255, 0.4)' : 'red',
+                                color: isCorrect ? 'white' : userChar === '' ? 'rgba(255, 255, 255, 0.4)' : 'red',  // Устанавливаем цвет буквы в зависимости от правильности
                             }}
                         >
                             {char}
@@ -96,27 +104,27 @@ const TextSection: React.FC<ITextSectionProps> = ({ setTextareaFocused, textarea
                 <span
                     className={styles.indicator}
                     style={!textareaFocused ?
-                        { display: "none" }
+                        { display: "none" }  // Прячем индикатор, если текстовая область не в фокусе
                         :
                         {
-                            left: `${typingData.userInput.length * letterWidth}px`,
+                            left: `${typingData.userInput.length * letterWidth}px`,  // Устанавливаем позицию индикатора в зависимости от длины введенного текста
                         }}
                 />
             </div>
             {!textareaFocused &&
                 <div className={styles.text_notice}>
                     <h3 className={styles.notice}>
-                        Click to focus
+                        Click to focus  {/* Уведомление для фокусировки текстовой области */}
                     </h3>
                 </div>
             }
             <textarea
-                autoFocus
-                ref={textareaRef}
-                value={typingData.userInput}
-                onChange={handleInputChange}
-                rows={3}
-                className={styles.field}
+                autoFocus  // Автоматически устанавливает фокус на текстовую область при рендере
+                ref={textareaRef}  // Присваиваем ссылку на текстовую область
+                value={typingData.userInput}  // Устанавливаем значение из состояния
+                onChange={handleInputChange}  // Обрабатываем изменения ввода
+                rows={3}  // Устанавливаем высоту текстовой области
+                className={styles.field}  // Применяем стили
             />
         </section>
     );

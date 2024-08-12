@@ -6,32 +6,36 @@ import { useSettings } from "@/hooks/useSettings"
 
 const OptionsPanel: React.FC<IOptionsPanelProps> = ({ name, value }) => {
 
+    // Извлекаем действия для изменения языка и таймера
+    const { changeLanguage, changeTimer } = useActions();
 
-    const { changeLanguage, changeTimer } = useActions()
-    const { settingsData } = useSettings()
-    const { typingData } = useTyping()
+    // Извлекаем данные настроек и состояния набора текста
+    const { settingsData } = useSettings();
+    const { typingData } = useTyping();
 
-
+    // Обработчик клика для изменения языка
     const languageClickHandler = (value: string) => {
-        changeLanguage(value)
+        changeLanguage(value); // Изменяем язык
     }
 
+    // Обработчик клика для изменения таймера
     const timerClickHandler = (value: string) => {
-        changeTimer(value)
+        changeTimer(value); // Изменяем таймер
     }
 
     return (
         <div className={styles.options_box}>
-            {value.map((v) => (
+            {value.map((v, index) => (
                 <button
+                    key={index}
                     style={{
-                        ...(settingsData.language == v && { color: "#3b3b3b" }),
-                        ...(typingData.time == v && { color: "#3b3b3b" }),
+                        ...(settingsData.language === v && { color: "#3b3b3b" }), // Изменяет цвет кнопки, если значение совпадает с текущим языком
+                        ...(typingData.time === v && { color: "#3b3b3b" }), // Изменяет цвет кнопки, если значение совпадает с текущим временем таймера
                     }}
                     className={styles.btn}
                     onClick={() => (
-                        name == "language" && languageClickHandler(v as string),
-                        name == "timer" && timerClickHandler(v as string)
+                        name === "language" && languageClickHandler(v as string), // Если имя равно "language", вызывается обработчик изменения языка
+                        name === "timer" && timerClickHandler(v as string) // Если имя равно "timer", вызывается обработчик изменения таймера
                     )}
                 >
                     {v}

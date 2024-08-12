@@ -5,26 +5,31 @@ import { useTypingProvider } from "@/hooks/useTypingProvider";
 
 const ResetButton: React.FC<IResetButtonProps> = ({ setTextareaFocused }) => {
 
-    const [hover, setHover] = useState<boolean>(false)
+    // Локальное состояние для отслеживания, находится ли курсор мыши над кнопкой
+    const [hover, setHover] = useState<boolean>(false);
 
-    const { setIsReset } = useTypingProvider()
+    // Получаем функцию для сброса состояния из хука useTypingProvider
+    const { setIsReset } = useTypingProvider();
 
     return (
         <button
-            className={styles.timer_btn}
-            onMouseEnter={() => { setHover(true) }}
-            onMouseLeave={() => { setHover(false) }}
-            onClick={() => (setIsReset(true), setTextareaFocused(true))}
+            className={styles.timer_btn} // Применяем стили к кнопке
+            onMouseEnter={() => { setHover(true); }} // Устанавливаем hover в true при наведении мыши
+            onMouseLeave={() => { setHover(false); }} // Устанавливаем hover в false при уходе мыши
+            onClick={() => {
+                setIsReset(true); // Устанавливаем состояние сброса в true
+                setTextareaFocused(true); // Устанавливаем фокус на текстовое поле
+            }}
         >
-            <img src="/icons/reload.svg" alt="" className={styles.icon} />
-
-            {hover &&
-                <div className={styles.hint}>
+            <img src="/icons/reload.svg" alt="" className={styles.icon} /> {/* Иконка перезагрузки */}
+            
+            {hover && (
+                <div className={styles.hint}> {/* Подсказка появляется при наведении мыши */}
                     <h4 className={styles.hint_title}>
                         Reset
                     </h4>
                 </div>
-            }
+            )}
         </button>
     );
 }
