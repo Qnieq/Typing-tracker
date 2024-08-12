@@ -15,6 +15,8 @@ export const store = configureStore({
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(wordsApi.middleware),
+  
+  devTools: false
 })
 
 
