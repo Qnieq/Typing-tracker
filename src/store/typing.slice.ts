@@ -1,126 +1,129 @@
 import { ITyping } from '@/types/typing.types';
 import { createSlice } from '@reduxjs/toolkit';
 
+// Начальное состояние для среза состояния набора текста
 const initialState: ITyping = {
-  text: "",                  // Текст для набора
-  userInput: "",             // Ввод пользователя
-  statistic: [],             // Статистика результатов
-  time: 30,                  // Общее время на набор (по умолчанию 30 секунд)
-  wpm: 0,                    // Скорость набора слов в минуту (WPM)
-  timeRemaining: 30,         // Оставшееся время
-  timerRunning: false,       // Флаг состояния таймера
-  startTime: null,           // Время начала набора
-  errors: 0,                 // Количество ошибок
-  totalWords: 0,             // Общее количество введенных слов
-  totalErrors: 0             // Общее количество ошибок
+  text: "", // Текущий текст для набора
+  userInput: "", // Введенный пользователем текст
+  statistic: [], // Статистика набора текста
+  time: 30, // Общее время для набора текста
+  wpm: 0, // Скорость набора текста в словах в минуту
+  timeRemaining: 30, // Оставшееся время
+  timerRunning: false, // Флаг для отслеживания состояния таймера
+  startTime: null, // Время начала набора текста
+  errors: 0, // Количество ошибок
+  totalWords: 0, // Общее количество введенных слов
+  totalErrors: 0 // Общее количество ошибок
 };
 
-// Создаем срез для управления состоянием набора текста
+// Создаем срез состояния с помощью createSlice
 const typingSlice = createSlice({
-  name: 'typing',
-  initialState,
+  name: 'typing', // Название среза состояния
+  initialState, // Начальное состояние
   reducers: {
-    // Обновляет введенный пользователем текст
+    // Редуктор для обновления ввода пользователя
     updateUserInput(state, action) {
-      state.userInput = action.payload;
+      state.userInput = action.payload; // Обновляем введенный текст
     },
-    // Устанавливает текст, который нужно набирать
+    // Редуктор для установки текста для набора
     setText(state, action) {
-      state.text = action.payload;
+      state.text = action.payload; // Устанавливаем текст для набора
     },
-    // Рассчитывает количество ошибок в пользовательском вводе
+    // Редуктор для вычисления количества ошибок
     calculateErrors(state) {
-      const expectedWord = state.text.split(' ')[0];  // Ожидаемое слово (первое слово в тексте)
-      const userInput = state.userInput.split('');    // Введенное пользователем слово
+      const expectedWord = state.text.split(' ')[0]; // Ожидаемое слово
+      const userInput = state.userInput.split(''); // Введенное пользователем слово
 
       let errors = 0;
-      // Сравниваем каждую букву введенного слова с ожидаемым словом
+      // Сравниваем введенные символы с ожидаемым словом
       for (let i = 0; i < userInput.length; i++) {
         if (expectedWord[i] !== userInput[i]) {
-          errors += 1;
+          errors += 1; // Увеличиваем количество ошибок при несовпадении символов
         }
       }
 
-      // Если введенное слово длиннее ожидаемого, учитываем дополнительные ошибки
+      // Учитываем лишние символы в вводе
       if (userInput.length > expectedWord.length) {
         errors += userInput.length - expectedWord.length;
       }
 
-      state.errors = errors;  // Устанавливаем количество ошибок в состояние
+      state.errors = errors; // Устанавливаем количество ошибок
     },
-    // Обрабатывает введенное слово (проверяет, совпадает ли оно с ожидаемым)
+    // Редуктор для обработки введенного слова
     processWord(state) {
-      if (state.userInput.trim().length > 0) {  // Проверка на пустой ввод
-        const expectedWord = state.text.split(' ')[0];
-        const userInput = state.userInput;
+      if (state.userInput.trim().length > 0) { // Проверка на пустой ввод
+        const expectedWord = state.text.split(' ')[0]; // Ожидаемое слово
+        const userInput = state.userInput; // Введенное слово
 
-        if (expectedWord === userInput) {  // Если введенное слово совпадает с ожидаемым
-          state.totalWords += 1;           // Увеличиваем счетчик введенных слов
+        if (expectedWord == userInput) {
+          state.totalWords += 1; // Увеличиваем счетчик введенных слов
           state.text = state.text.replace(/^\s*\S+\s*/, ''); // Убираем введенное слово из текста
-          state.userInput = "";            // Очищаем ввод пользователя
+          state.userInput = ""; // Очищаем ввод пользователя
         }
       }
     },
-    // Рассчитывает скорость набора слов в минуту (WPM)
+    // Редуктор для вычисления скорости набора текста (WPM)
     calculateWPM(state) {
       const currentTime = new Date().getTime();
       const timeElapsed = (currentTime - state.startTime!) / 60000;  // Время в минутах
 
-      console.log(state.totalWords / timeElapsed);  // Вывод WPM в консоль для отладки
+      console.log(state.totalWords / timeElapsed) // Логирование WPM для отладки
 
       if (timeElapsed > 0) {
-        state.wpm = Math.floor(state.totalWords / timeElapsed); // Устанавливаем значение WPM
+        state.wpm = Math.floor(state.totalWords / timeElapsed); // Используем totalWords для расчета WPM
       }
     },
-    // Устанавливает время начала таймера
+    // Редуктор для установки времени начала таймера
     setStartTime(state) {
       if (!state.timerRunning) {
-        state.startTime = new Date().getTime();
+        state.startTime = new Date().getTime(); // Устанавливаем время начала
       }
-      state.timerRunning = true;
+      state.timerRunning = true; // Запускаем таймер
     },
-    // Записывает статистику (время, WPM, количество ошибок)
+    // Редуктор для записи статистики
     recordStatistics(state) {
       state.statistic.push({
-        name: state.timeRemaining + 1,  // Используем оставшееся время для записи
-        wpm: state.wpm,
-        error: state.errors === 0 ? null : state.errors, // Если ошибок нет, записываем null
+        name: state.timeRemaining + 1, // Текущий оставшийся период времени
+        wpm: state.wpm, // Скорость набора текста
+        error: state.errors == 0 ? null : state.errors, // Количество ошибок, если есть
       });
     },
-    // Сбрасывает состояние среза
+    // Редуктор для сброса состояния
     reset(state) {
-      state.userInput = "";
-      state.errors = 0;
-      state.wpm = 0;
-      state.timerRunning = false;
-      state.timeRemaining = state.time;
-      state.startTime = null;
-      state.statistic = [];
-      state.totalWords = 0;
-      state.totalErrors = 0;
+      state.userInput = ""; // Очищаем ввод пользователя
+      state.errors = 0; // Сбрасываем количество ошибок
+      state.wpm = 0; // Сбрасываем скорость набора текста
+      state.timerRunning = false; // Останавливаем таймер
+      state.timeRemaining = state.time; // Восстанавливаем оставшееся время
+      state.startTime = null; // Сбрасываем время начала
+      state.statistic = []; // Очищаем статистику
+      state.totalWords = 0; // Сбрасываем счетчик введенных слов
+      state.totalErrors = 0; // Сбрасываем общее количество ошибок
     },
-    // Уменьшает оставшееся время и обновляет статистику
+    // Редуктор для уменьшения времени
     decrementTime(state) {
       if (state.timeRemaining > 0) {
-        state.timeRemaining -= 1;
+        state.timeRemaining -= 1; // Уменьшаем оставшееся время на 1
 
-        typingSlice.caseReducers.calculateWPM(state);  // Рассчитываем WPM
-        typingSlice.caseReducers.calculateErrors(state);  // Рассчитываем ошибки
-        state.totalErrors += state.errors;  // Увеличиваем общий счетчик ошибок
+        // Пересчитываем WPM и ошибки, обновляем статистику
+        typingSlice.caseReducers.calculateWPM(state);
+        typingSlice.caseReducers.calculateErrors(state);
+        state.totalErrors += state.errors;
 
-        typingSlice.caseReducers.recordStatistics(state);  // Записываем статистику
+        typingSlice.caseReducers.recordStatistics(state);
       } else {
-        state.timerRunning = false;  // Останавливаем таймер, если время истекло
+        state.timerRunning = false; // Останавливаем таймер, если время истекло
       }
     },
-    // Изменяет время таймера
+    // Редуктор для изменения времени
     changeTimer(state, actions) {
-      state.timeRemaining = actions.payload;
-      state.time = actions.payload;
+      state.timeRemaining = actions.payload; // Устанавливаем новое значение оставшегося времени
+      state.time = actions.payload; // Устанавливаем новое значение общего времени
     },
   },
 });
 
+// Экспортируем действия редуктора для использования в других частях приложения
 export const {
   updateUserInput,
   setText,
@@ -134,4 +137,5 @@ export const {
   changeTimer,
 } = typingSlice.actions;
 
+// Экспортируем редуктор по умолчанию
 export default typingSlice.reducer;
