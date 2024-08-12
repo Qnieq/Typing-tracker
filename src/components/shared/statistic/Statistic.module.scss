@@ -1,0 +1,58 @@
+@import "@/mixins";
+
+.statistic {
+    width: clamp(300px, 60vw, 2000px);
+    @include flex(center, center);
+    flex-direction: column;
+    gap: 30px;
+
+    .title {
+        @include text-settings(45px, 4vw, 66px, var(--statistic-title), 700);
+        margin: 0;
+    }
+
+    .statistic_info {
+        @include flex(center, center);
+        flex-wrap: wrap;
+        gap: 20px;
+
+        .box {
+            @include flex(center, center);
+            flex-direction: column;
+
+            .name {
+                @include text-settings(20px, 2vw, 36px, var(--statistic-name), 700);
+                margin: 0
+            }
+
+            .info {
+                @include text-settings(45px, 4vw, 60px, var(--statistic-title), 700);
+                font-family: "Montserrat";
+                margin: 0;
+            }
+        }
+    }
+
+    .chart {
+        width: 100%;
+        height: clamp(200px, 50vw, 500px);
+        position: relative;
+        box-sizing: border-box;
+
+        .chart_info_box {
+            position: absolute;
+            transform: rotate(-90deg);
+            transform-origin: left top;
+            left: 0;
+            top: 30%;
+            bottom: 0;
+            margin: auto;
+            height: 15px;
+        
+            .chart_info {
+                @include text-settings(12px, 2vw, 16px, var(--statistic-name), 700);
+                margin: auto;
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  --bg: linear-gradient(180deg, rgb(1, 22, 56) 5%, rgb(1, 39, 99) 45%, #0075d7 100%);
+  --bg-hover: linear-gradient(180deg, rgba(0,10,26,1) 20%, rgba(0,1,62,1) 100%);
+  --settings-bg: #33a2ff;
+  --border: #fff;
+  --text: #fff;
+  --typing-hint: rgba(255, 255, 255, 0.322);
+  --statistic-name: #969696;
+  --statistic-title: #ecc055;
+  --settings-info-title: #ecc055;
+  --settings-info-name: #ffffff;
+  --settings-info: #ffffffc7;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  font-family: "Roboto Mono", monospace;
+  font-family: "Montserrat", sans-serif;
+  background: var(--bg);
+}

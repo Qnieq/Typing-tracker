@@ -1,0 +1,11 @@
+@import "@/mixins";
+
+.timer_box {
+    height: 44px;
+    padding: 0 30px;
+
+    .timer {
+        @include text-settings(25px, 7vw, 40px, var(--text), 700);
+        margin: 0;
+    }
+}

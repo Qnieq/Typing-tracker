@@ -1,0 +1,94 @@
+@import "@/mixins";
+
+.text_section {
+    width: clamp(280px, 70vw, 1200px);
+    height: 200px;
+    @include flex(flex-start, center);
+    overflow: hidden;
+    position: relative;
+    padding: 0 20px;
+
+    .text_hint {
+        position: absolute;
+        top: 0;
+        width: clamp(280px, 70vw, 1200px);
+        height: 200px;
+        overflow: hidden;
+        pointer-events: none;
+
+        .hint {
+            @include text-settings(0, 0, 0, var(--typing-hint), 700);
+            font-size: 3em !important;
+            margin: 0;
+            letter-spacing: 0.08em;
+            display: inline;
+            position: relative;
+        }
+
+        .hint-skeleton {
+            @include text-settings(0, 0, 0, var(--typing-hint), 700);
+            font-size: 3em !important;
+            margin: 0;
+            letter-spacing: 0.08em;
+            display: inline;
+            position: relative;
+            animation: loading 0.2s ease-in-out forwards;
+        }
+
+        @keyframes loading {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .indicator {
+            position: absolute;
+            top: 15px;
+            height: 45px;
+            width: 3px;
+            border-radius: 10px;
+            background: #fff;
+            transition: left 0.1s ease-out;
+            animation: indicatorAnim 0.9s ease-in-out infinite;
+        }
+
+        @keyframes indicatorAnim {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+    }
+
+    .text_notice {
+        width: 100%;
+        height: 100%;
+        @include flex(center, center);
+        position: absolute;
+        background: rgba(4, 55, 114, 0.418);
+        border-radius: 20px;
+
+        .notice {
+            @include text-settings(16px, 2vw, 22px, var(--text), 700);
+        }
+
+    }
+
+    .field {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        opacity: 0;
+    }
+}

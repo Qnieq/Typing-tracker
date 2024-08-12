@@ -1,0 +1,20 @@
+@import "@/mixins";
+
+.variants {
+    @include flex(center, center);
+    gap: 15px;
+
+    .variant_btn {
+        @include flex(center, center);
+        @include text-settings(12px, 2vw, 16px, var(--text), 700);
+        font-family: "Montserrat";
+        gap: 5px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+
+        .icon {
+            width: 15px;
+        }
+    }
+}

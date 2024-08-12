@@ -1,0 +1,27 @@
+@import "@/mixins";
+
+.timer_btn {
+    @include flex(center, center);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .hint {
+        position: absolute;
+        top: 35px;
+        padding: 5px 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+
+        .hint_title {
+            @include text-settings(14px, 3vw, 18px, var(--text), 700);
+            margin: 0;
+        }
+    }
+}

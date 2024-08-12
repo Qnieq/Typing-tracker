@@ -1,0 +1,58 @@
+@import "@/mixins";
+
+.settings_panel {
+    position: absolute;
+    top: 100px;
+    height: 40px;
+    padding: 0 clamp(20px, 2vw, 50px);
+    @include flex(center, flex-start);
+    gap: clamp(4px, 1vw, 10px);
+    background: var(--settings-bg);
+    border-radius: 10px;
+    border: 2px solid var(--border);
+
+    .line {
+        height: 20px;
+        padding: 0 3px;
+        background: #085579;
+        border-radius: 20px
+    }
+
+    .btn {
+        @include flex(center, center);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0 10px;
+
+        .icon {
+            width: 14px;
+        }
+    }
+
+    .extended_settings {
+        width: 100%;
+        @include flex(center, center);
+        flex-direction: column;
+        gap: 20px;
+
+        .field {
+            height: 30px;
+            padding: 0 10px;
+            background: transparent;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            @include text-settings(12px, 2vw, 16px, var(--text), 700);
+            font-family: "Montserrat";
+
+            &:focus {
+                outline: 1px solid var(--border);
+            }
+
+            &::placeholder {
+                @include text-settings(12px, 2vw, 16px, var(--text), 700);
+                font-family: "Montserrat";
+            }
+        }
+    }
+}

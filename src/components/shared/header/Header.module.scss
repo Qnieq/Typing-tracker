@@ -1,0 +1,12 @@
+@import "@/mixins";
+
+.header {
+    width: 100%;
+    @include flex(center, center);
+    position: absolute;
+    top: 20px;
+
+    .logo_box {
+        cursor: pointer;
+    }
+}

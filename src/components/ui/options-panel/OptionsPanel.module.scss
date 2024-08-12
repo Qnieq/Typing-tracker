@@ -1,0 +1,19 @@
+@import "@/mixins";
+
+.options_box {
+    @include flex(center, center);
+    gap: 8px;
+
+    .btn {
+        @include flex(center, center);
+        background: transparent;
+        border: none;
+        @include text-settings(12px, 2vw, 16px, var(--text), 700);
+        font-family: "Montserrat";
+        cursor: pointer;
+
+        .icon {
+            width: 14px;
+        }
+    }
+}
