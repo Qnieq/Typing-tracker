@@ -4,6 +4,7 @@ import { useActions } from "@/hooks/useActions";
 import { useEffect, useRef, useState } from "react";
 import { ITextSectionProps } from "./text-section.types";
 import { useTypingProvider } from "@/hooks/useTypingProvider";
+import { AnimatePresence, motion } from "framer-motion";
 
 const TextSection: React.FC<ITextSectionProps> = ({ setTextareaFocused, textareaFocused }) => {
     // Получаем действия и данные из хуков
@@ -111,13 +112,20 @@ const TextSection: React.FC<ITextSectionProps> = ({ setTextareaFocused, textarea
                         }}
                 />
             </div>
-            {!textareaFocused &&
-                <div className={styles.text_notice}>
-                    <h3 className={styles.notice}>
-                        Click to focus  {/* Уведомление для фокусировки текстовой области */}
-                    </h3>
-                </div>
-            }
+            <AnimatePresence>
+                {!textareaFocused &&
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className={styles.text_notice}
+                    >
+                        <h3 className={styles.notice}>
+                            Click to focus  {/* Уведомление для фокусировки текстовой области */}
+                        </h3>
+                    </motion.div>
+                }
+            </AnimatePresence>
             <textarea
                 autoFocus  // Автоматически устанавливает фокус на текстовую область при рендере
                 ref={textareaRef}  // Присваиваем ссылку на текстовую область

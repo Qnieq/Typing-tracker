@@ -11,6 +11,7 @@
         @include text-settings(12px, 2vw, 16px, var(--text), 700);
         font-family: "Montserrat";
         cursor: pointer;
+        transition: color 0.2s ease-in-out;
 
         .icon {
             width: 14px;

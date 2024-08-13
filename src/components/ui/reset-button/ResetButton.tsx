@@ -2,6 +2,7 @@ import { useState } from "react";
 import { IResetButtonProps } from "./reset-button.types";
 import styles from "./ResetButton.module.scss"
 import { useTypingProvider } from "@/hooks/useTypingProvider";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ResetButton: React.FC<IResetButtonProps> = ({ setTextareaFocused }) => {
 
@@ -22,14 +23,21 @@ const ResetButton: React.FC<IResetButtonProps> = ({ setTextareaFocused }) => {
             }}
         >
             <img src="/icons/reload.svg" alt="" className={styles.icon} /> {/* Иконка перезагрузки */}
-            
-            {hover && (
-                <div className={styles.hint}> {/* Подсказка появляется при наведении мыши */}
-                    <h4 className={styles.hint_title}>
-                        Reset
-                    </h4>
-                </div>
-            )}
+            <AnimatePresence>
+                {hover && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className={styles.hint}
+                    > {/* Подсказка появляется при наведении мыши */}
+                        <h4 className={styles.hint_title}>
+                            Reset
+                        </h4>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </button>
     );
 }
