@@ -21,15 +21,15 @@ const typingSlice = createSlice({
   name: 'typing', // Название среза состояния
   initialState, // Начальное состояние
   reducers: {
-    // Редуктор для обновления ввода пользователя
+    // Редюсер для обновления ввода пользователя
     updateUserInput(state, action) {
       state.userInput = action.payload; // Обновляем введенный текст
     },
-    // Редуктор для установки текста для набора
+    // Редюсер для установки текста для набора
     setText(state, action) {
       state.text = action.payload; // Устанавливаем текст для набора
     },
-    // Редуктор для вычисления количества ошибок
+    // Редюсер для вычисления количества ошибок
     calculateErrors(state) {
       const expectedWord = state.text.split(' ')[0]; // Ожидаемое слово
       const userInput = state.userInput.split(''); // Введенное пользователем слово
@@ -49,7 +49,7 @@ const typingSlice = createSlice({
 
       state.errors = errors; // Устанавливаем количество ошибок
     },
-    // Редуктор для обработки введенного слова
+    // Редюсер для обработки введенного слова
     processWord(state) {
       if (state.userInput.trim().length > 0) { // Проверка на пустой ввод
         const expectedWord = state.text.split(' ')[0]; // Ожидаемое слово
@@ -62,25 +62,23 @@ const typingSlice = createSlice({
         }
       }
     },
-    // Редуктор для вычисления скорости набора текста (WPM)
+    // Редюсер для вычисления скорости набора текста (WPM)
     calculateWPM(state) {
       const currentTime = new Date().getTime();
       const timeElapsed = (currentTime - state.startTime!) / 60000;  // Время в минутах
-
-      console.log(state.totalWords / timeElapsed) // Логирование WPM для отладки
 
       if (timeElapsed > 0) {
         state.wpm = Math.floor(state.totalWords / timeElapsed); // Используем totalWords для расчета WPM
       }
     },
-    // Редуктор для установки времени начала таймера
+    // Редюсер для установки времени начала таймера
     setStartTime(state) {
       if (!state.timerRunning) {
         state.startTime = new Date().getTime(); // Устанавливаем время начала
       }
       state.timerRunning = true; // Запускаем таймер
     },
-    // Редуктор для записи статистики
+    // Редюсер для записи статистики
     recordStatistics(state) {
       state.statistic.push({
         name: state.timeRemaining + 1, // Текущий оставшийся период времени
@@ -88,7 +86,7 @@ const typingSlice = createSlice({
         error: state.errors == 0 ? null : state.errors, // Количество ошибок, если есть
       });
     },
-    // Редуктор для сброса состояния
+    // Редюсер для сброса состояния
     reset(state) {
       state.userInput = ""; // Очищаем ввод пользователя
       state.errors = 0; // Сбрасываем количество ошибок
@@ -100,7 +98,7 @@ const typingSlice = createSlice({
       state.totalWords = 0; // Сбрасываем счетчик введенных слов
       state.totalErrors = 0; // Сбрасываем общее количество ошибок
     },
-    // Редуктор для уменьшения времени
+    // Редюсер для уменьшения времени
     decrementTime(state) {
       if (state.timeRemaining > 0) {
         state.timeRemaining -= 1; // Уменьшаем оставшееся время на 1
@@ -115,15 +113,15 @@ const typingSlice = createSlice({
         state.timerRunning = false; // Останавливаем таймер, если время истекло
       }
     },
-    // Редуктор для изменения времени
+    // Редусер для изменения времени
     changeTimer(state, actions) {
       state.timeRemaining = actions.payload; // Устанавливаем новое значение оставшегося времени
-      state.time = actions.payload; // Устанавливаем новое значение общего времени
+      state.time = Number(actions.payload); // Устанавливаем новое значение общего времени
     },
   },
 });
 
-// Экспортируем действия редуктора для использования в других частях приложения
+// Экспортируем действия Редюсера для использования в других частях приложения
 export const {
   updateUserInput,
   setText,
@@ -137,5 +135,5 @@ export const {
   changeTimer,
 } = typingSlice.actions;
 
-// Экспортируем редуктор по умолчанию
+// Экспортируем Редюсер по умолчанию
 export default typingSlice.reducer;
